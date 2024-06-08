@@ -1,0 +1,297 @@
+#Figure 2a:
+  
+  #family only
+  Ph<-read.table("/media/yak/Data/backup/ruminant/ruminant_archaea_all_culture0.999/mmseqs/archaea_protein_matrix.txt",header=T,check.names=FALSE,sep="\t",row.names = 1)
+  Ph$Count0zeros<-rowSums(Ph==0)
+  f2<- Ph  %>% filter(Count0zeros<948 )
+  f3<-f2[,-999]
+  f3[f3>=1]<-1
+  
+  annotation_col<-read.csv("annotation_col2.txt",header=T,check.names=FALSE,sep="\t",row.names = 1)
+  annotation_row<-read.csv("annotation_row2.txt",header=T,check.names=FALSE,sep="\t",row.names = 1)
+  
+  ann_colors = list(
+    Family = c(c(`Methanobacteriaceae` = "#66c2a5", 
+                 `Methanomethylophilaceae` = "#8da0cb", 
+                 `Methanomicrobiaceae` = "#e78ac3", 
+                 `Methanocorpusculaceae` = "#fc8d62", 
+                 `Methanosarcinaceae` = "#b2182b" 
+    )))
+  
+  
+  line_colors<-c("blue")
+  line_alpha<-c(0.2)
+  
+  
+  pheatmap(f3, filename = "archea_protein_family8.pdf",
+           # scale = "row",  
+           show_rownames = FALSE,
+           show_colnames = FALSE,
+           cluster_row = TRUE,
+           lwd=0.1,
+           cluster_cols =TRUE, clustering_method = "average",
+           #color = colorRampPalette(c("#f0f0f0",  "blue"))(100),
+           color = colorRampPalette(c("#ffffff",  "blue"))(100),
+           # color = colorRampPalette(c("gray",  "blue"))(100),
+           #    cellwidth = 10, cellheight =5.3, fontsize = 4.8, border=FALSE,
+           annotation_row=annotation_row,
+           annotation_colors = ann_colors,
+           annotation_col =annotation_col,
+           #border_color = "blue",
+           # treeheight_row = 20, treeheight_col = 50,
+           legend=FALSE,
+           # treeheight_col = 60,
+           #treeheight_row = 60,
+           treeheight_col = 30,
+           treeheight_row = 30,
+           cluster_lines_col=list(color=line_colors, alpha=line_alpha),
+           cluster_lines_row=list(color=line_colors, alpha=line_alpha),
+           width=6,
+           height=6  
+           # gaps_row = c(13)
+           
+  )
+
+#Figure 2b and c
+  NMDS <- read.table('/Users/mijiandui/OneDrive/文档/兰州大学/文章/反刍动物古菌/NC/data/archaea_relative_NMDS.txt',head=T)
+  NMDS <-NMDS[,-1]
+  centroids <- aggregate(cbind(NMDS1,NMDS2)~Genus,NMDS,mean)
+  gg <- merge(NMDS,aggregate(cbind(mean.NMDS1=NMDS1,mean.NMDS2=NMDS2)~Genus,NMDS,mean),by="Genus")
+  p<-ggplot(gg, aes(x = NMDS1, y = NMDS2,colour = Genus), label=Genus)+geom_point(aes(colour = Genus),size=0.01,alpha = 1)+
+    # geom_point(aes(x=mean.PC1, y=mean.PC2),size=5,alpha = 1)+
+    #geom_text(label=gg$ID2)+
+    geom_segment(aes(x=mean.NMDS1,y=mean.NMDS2, xend=NMDS1, yend=NMDS2),size=0.01)+
+    theme_classic()+
+    #ggtitle("A")+
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+          panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+    theme(text = element_text(colour = "black",size=10))+
+    theme(axis.text = element_text(colour = "black",size=10),
+          axis.title.y = element_text(size = 10, angle = 90),
+          axis.title.x = element_text(size = 10, angle = 0))+
+    ylab("NMDS2")+xlab("NMDS1")+
+    theme(legend.title=element_blank())+
+    #theme(legend.position="none")+
+    #theme(legend.position="right")+
+    #scale_fill_discrete(guide = guide_legend(label.vjust=-5))+
+    # guides(fill = guide_legend(keywidth = 2, keyheight = 1,label.vjust =1,label.hjust =1) )+
+    # geom_text(aes(label=Source_day3), size=3)+
+    #geom_text(data=pc[pc$Source_day3=='Air',], aes(vjust=1))+
+    # stat_ellipse(type = "norm",level=0.6, show.legend = TRUE)+
+    # theme(legend.text = element_text(margin = margin(r = 10, unit = "pt")),legend.spacing = unit(1,"cm"))+
+    scale_colour_manual(values=c("#66c2a5","#66c2a5","#66c2a5","#66c2a5","#66c2a5","#66c2a5","#fc8d62","#8da0cb","#e78ac3","#b2182b","#ffd92f",
+                                 "#a6d854",
+                                 "#fbb4ae","#b3cde3","#ccebc5","#decbe4","#fed9a6","#ffffcc","#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c",
+                                 "#fdbf6f",
+                                 "#ff7f00","#cab2d6","#6a3d9a", "green1",
+                                 
+                                 
+                                 "#f781bf","#a65628","#e41a1c","#377eb8","#ff7f00","#4daf4a",
+                                 "yellow4",
+                                 "brown","deeppink1","blue1", "#FF7F00", # orange
+                                 "green1",
+                                 "steelblue4",
+                                 "#E31A1C", # red
+                                 "yellow3",
+                                 "green4",
+                                 "dodgerblue2",
+                                 "#6A3D9A", # purple
+                                 
+                                 "gold1",
+                                 "#FB9A99", # lt pink
+                                 "palegreen2",
+                                 "#CAB2D6", # lt purple
+                                 "#FDBF6F", # lt orange
+                                 "darkturquoise",
+                                 "darkorange4",
+                                 "gray70", "khaki2","skyblue2","black"))
+  p+geom_point(aes(x=mean.NMDS1, y=mean.NMDS2),size=1,alpha = 1)
+  
+  ggsave("/Users/mijiandui/OneDrive/文档/兰州大学/文章/反刍动物古菌/NC/Archaea_mbc_black_NMDS2.pdf",height=4, width=6, units='in', useDingbats=FALSE,dpi=600)
+  
+# Figure 4a and b
+  
+  NMDS <- read.table('/Users/mijiandui/OneDrive/文档/兰州大学/文章/反刍动物古菌/NC/data/archaea_relative_NMDS.txt',head=T)
+  
+  centroids <- aggregate(cbind(NMDS1,NMDS2)~breed,NMDS,mean)
+  gg <- merge(NMDS,aggregate(cbind(mean.NMDS1=NMDS1,mean.NMDS2=NMDS2)~breed,NMDS,mean))
+  p<-ggplot(gg, aes(x = NMDS1, y = NMDS2,colour = breed), label=breed)+geom_point(aes(colour = breed),size=0.01,alpha = 1)+
+    # geom_point(aes(x=mean.PC1, y=mean.PC2),size=5,alpha = 1)+
+    #geom_text(label=gg$ID2)+
+    geom_segment(aes(x=mean.NMDS1,y=mean.NMDS2, xend=NMDS1, yend=NMDS2), linewidth=0.001)+
+    theme_classic()+
+    #ggtitle("A")+
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+          panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+    theme(text = element_text(colour = "black",size=10))+
+    theme(axis.text = element_text(colour = "black",size=10),
+          axis.title.y = element_text(size = 10, angle = 90),
+          axis.title.x = element_text(size = 10, angle = 0))+
+    ylab("NMDS2")+xlab("NMDS1")+
+    theme(legend.title=element_blank())+
+    #theme(legend.position="none")+
+    #theme(legend.position="right")+
+    #scale_fill_discrete(guide = guide_legend(label.vjust=-5))+
+    # guides(fill = guide_legend(keywidth = 2, keyheight = 1,label.vjust =1,label.hjust =1) )+
+    # geom_text(aes(label=Source_day3), size=3)+
+    #geom_text(data=pc[pc$Source_day3=='Air',], aes(vjust=1))+
+    # stat_ellipse(type = "norm",level=0.6, show.legend = TRUE)+
+    # theme(legend.text = element_text(margin = margin(r = 10, unit = "pt")),legend.spacing = unit(1,"cm"))+
+    scale_colour_manual(values=c("#0000FF","#00C000","#610051","#A00000","#AD07E3","#000080",
+                                 "#FF0000",
+                                 "#FF8000","#94641F","#000000",
+                                 "#66c2a5","#fc8d62","#8da0cb","#e78ac3","#b2182b","#ffd92f",
+                                 "#a6d854",
+                                 "#fbb4ae","#b3cde3","#ccebc5","#decbe4","#fed9a6","#ffffcc","#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c",
+                                 "#fdbf6f",
+                                 "#ff7f00","#cab2d6","#6a3d9a", "green1",
+                                 
+                                 "#f781bf","#a65628","#e41a1c","#377eb8","#ff7f00","#4daf4a",
+                                 "yellow4",
+                                 "brown","deeppink1","blue1", "#FF7F00", # orange
+                                 "green1",
+                                 "steelblue4",
+                                 "#E31A1C", # red
+                                 "yellow3",
+                                 "green4",
+                                 "dodgerblue2",
+                                 "#6A3D9A", # purple
+                                 
+                                 "gold1",
+                                 "#FB9A99", # lt pink
+                                 "palegreen2",
+                                 "#CAB2D6", # lt purple
+                                 "#FDBF6F", # lt orange
+                                 "darkturquoise",
+                                 "darkorange4",
+                                 "gray70", "khaki2","skyblue2","black"))
+  p+geom_point(aes(x=mean.NMDS1, y=mean.NMDS2),size=1,alpha = 1)
+  
+  ggsave("/Users/mijiandui/OneDrive/文档/兰州大学/文章/反刍动物古菌/NC/Archaea_breed_rumen_NMDS.pdf",height=4, width=6, units='in', useDingbats=FALSE,dpi=600)
+  
+  
+  NMDS <- read.table('/Users/mijiandui/OneDrive/文档/兰州大学/文章/反刍动物古菌/NC/data/archaea_relative_buffalo_cow_yak_NDMS.txt',head=T)
+  
+  centroids <- aggregate(cbind(NMDS1,NMDS2)~location+breed,NMDS,mean)
+  gg <- merge(NMDS,aggregate(cbind(mean.NMDS1=NMDS1,mean.NMDS2=NMDS2)~location+breed,NMDS,mean))
+  p<-ggplot(gg, aes(x = NMDS1, y = NMDS2,colour = location,shape=breed), label=location)+geom_point(aes(colour = location),size=0.01,alpha = 1)+
+    # geom_point(aes(x=mean.PC1, y=mean.PC2),size=5,alpha = 1)+
+    #geom_text(label=gg$ID2)+
+    geom_segment(aes(x=mean.NMDS1,y=mean.NMDS2, xend=NMDS1, yend=NMDS2),size=0.01)+
+    theme_classic()+
+    #ggtitle("A")+
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+          panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+    theme(text = element_text(colour = "black",size=10))+
+    theme(axis.text = element_text(colour = "black",size=10),
+          axis.title.y = element_text(size = 10, angle = 90),
+          axis.title.x = element_text(size = 10, angle = 0))+
+    ylab("NMDS2")+xlab("NMDS1")+
+    theme(legend.title=element_blank())+
+    #theme(legend.position="none")+
+    #theme(legend.position="right")+
+    #scale_fill_discrete(guide = guide_legend(label.vjust=-5))+
+    # guides(fill = guide_legend(keywidth = 2, keyheight = 1,label.vjust =1,label.hjust =1) )+
+    # geom_text(aes(label=Source_day3), size=3)+
+    #geom_text(data=pc[pc$Source_day3=='Air',], aes(vjust=1))+
+    # stat_ellipse(type = "norm",level=0.6, show.legend = TRUE)+
+    # theme(legend.text = element_text(margin = margin(r = 10, unit = "pt")),legend.spacing = unit(1,"cm"))+
+    scale_colour_manual(values=c("#e6550d","#fd8d3c","#fdae6b","#fdd0a2","#31a354","#a1d99b",
+                                 "#c7e9c0",
+                                 "#08519c", "#3182bd","#6baed6","#9ecae1",
+                                 "#fc8d62","#0000FF","#00C000","#610051","#A00000","#AD07E3","#000080",
+                                 "#FF0000",
+                                 "#FF8000","#94641F","#000000",
+                                 "#66c2a5","#fc8d62","#8da0cb","#e78ac3","#b2182b","#ffd92f",
+                                 "#a6d854",
+                                 "#fbb4ae","#b3cde3","#ccebc5","#decbe4","#fed9a6","#ffffcc","#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c",
+                                 "#fdbf6f",
+                                 "#ff7f00","#cab2d6","#6a3d9a", "green1",
+                                 
+                                 
+                                 "#f781bf","#a65628","#e41a1c","#377eb8","#ff7f00","#4daf4a",
+                                 "yellow4",
+                                 "brown","deeppink1","blue1", "#FF7F00", # orange
+                                 "green1",
+                                 "steelblue4",
+                                 "#E31A1C", # red
+                                 "yellow3",
+                                 "green4",
+                                 "dodgerblue2",
+                                 "#6A3D9A", # purple
+                                 
+                                 "gold1",
+                                 "#FB9A99", # lt pink
+                                 "palegreen2",
+                                 "#CAB2D6", # lt purple
+                                 "#FDBF6F", # lt orange
+                                 "darkturquoise",
+                                 "darkorange4",
+                                 "gray70", "khaki2","skyblue2","black"))
+  p+geom_point(aes(x=mean.NMDS1, y=mean.NMDS2),size=1,alpha = 1)+
+    theme(
+      # legend.title = element_text(margin = margin(b = 10)),  # 设置标题的间距
+      legend.spacing.x = unit(0.1, "cm")  # 设置标签的间距
+    )
+  
+  ggsave("/Users/mijiandui/OneDrive/文档/兰州大学/文章/反刍动物古菌/NC/Archaea_buffalo_cow_yak_NMDS.pdf",height=4, width=6, units='in', useDingbats=FALSE,dpi=600)
+  
+  
+  
+# Supplementary Figure 3
+  
+  Ph<-read.table("meyhyl_fastani_pheatmap.txt",header=T,check.names=FALSE,sep="\t",row.names = 1)
+  annotation_col<-read.csv("annotation_col_meyhyl.txt",header=T,check.names=FALSE,sep="\t",row.names = 1)
+  annotation_row<-read.csv("annotation_row_meyhyl.txt",header=T,check.names=FALSE,sep="\t",row.names = 1)
+  
+  ann_colors = list(
+    
+    source = c(c(`ruminant` = "#e41a1c", 
+                 `chicken_gut` = "#377eb8", 
+                 `human_gut` = "#4daf4a", 
+                 `meta_environment` = "#984ea3", 
+                 `human_saliva` = "#ffff33", 
+                 `wastewater` = "#a65628", 
+                 `sediment` = "#f781bf", 
+                 `termite_gut` = "#999999", 
+                 `soil` = "#8dd3c7"
+                
+    )))
+  
+  
+  line_colors<-c("blue")
+  line_alpha<-c(0.2)
+  
+  pheatmap(Ph, filename = "archea_meyhly3.pdf",
+           # scale = "row",  
+           show_rownames = FALSE,
+           show_colnames = FALSE,
+           cluster_row = TRUE,
+           lwd=0.1,
+           cluster_cols =TRUE, clustering_method = "average",
+           #color = colorRampPalette(c("#f0f0f0",  "blue"))(100),
+           #color = colorRampPalette(c("#ffffff",  "blue"))(100),
+           #color = colorRampPalette(c("#ffffff",  "#FF7F00"))(100),
+           #color = colorRampPalette(c("#ffffff",  "#a63603"))(100),
+           color = colorRampPalette(c("#ffffff",  "#fc4e2a"))(100),
+           # color = colorRampPalette(c("gray",  "blue"))(100),
+           #    cellwidth = 10, cellheight =5.3, fontsize = 4.8, border=FALSE,
+           annotation_row=annotation_row,
+           annotation_colors = ann_colors,
+           annotation_col =annotation_col,
+           #border_color = "blue",
+           # treeheight_row = 20, treeheight_col = 50,
+           #  legend=FALSE,
+           treeheight_col = 20,
+           treeheight_row = 20,
+           cluster_lines_col=list(color=line_colors, alpha=line_alpha),
+           cluster_lines_row=list(color=line_colors, alpha=line_alpha),
+           width=7.5,
+           height=6  
+           # gaps_row = c(13)
+           
+  )
+  
+  
+  
+  
